@@ -1,0 +1,66 @@
+<?php
+
+namespace App\Support;
+
+use Nous\CryptApiCheckout\Contracts\OrderResolver;
+
+/**
+ * Bridge between your orders and the crypto checkout.
+ * Register it in config/cryptapi-checkout.php -> 'order_resolver'.
+ */
+class CryptoOrderResolver implements OrderResolver
+{
+    /**
+     * How much to charge for this reference.
+     *
+     * @return array{reference:string, amount:float, email?:?string, description?:?string, thanks_url?:?string}|null
+     */
+    public function find(string $reference): ?array
+    {
+        $order = \App\Models\Order::where('order_number', $reference)->first();
+
+        if (! $order) {
+            return null;
+        }
+
+        // already paid? send the customer to the thank-you page instead of a new address
+        if ($order->payment_status === 'paid') {
+            return [
+                'reference' => $order->order_number,
+                'amount' => (float) $order->total,
+                'email' => $order->email,
+                'thanks_url' => route('order.thanks', $order->order_number),
+            ];
+        }
+
+        return [
+            'reference' => $order->order_number,
+            'amount' => (float) $order->total,          // USD, fee is added by the package
+            'email' => $order->email,
+            'description' => 'Order ' . $order->order_number,
+            'thanks_url' => route('order.thanks', $order->order_number),
+        ];
+    }
+
+    /**
+     * Money is confirmed on-chain (or by the IPN).
+     *
+     * @param array{reference:string, coin:string, txid:?string, usd:float, coin_amount:?float, confirmations:int, verified:array} $payment
+     */
+    public function markPaid(string $reference, array $payment): void
+    {
+        $order = \App\Models\Order::where('order_number', $reference)->first();
+
+        if (! $order || $order->payment_status === 'paid') {
+            return;
+        }
+
+        $order->update([
+            'payment_status' => 'paid',
+            'payment_method' => 'crypto',
+            'transaction_id' => $payment['txid'],
+        ]);
+
+        // ...provision / invoice / notify here
+    }
+}
