@@ -168,6 +168,14 @@
       @endforeach
       <p class="note">Amount to pay is ${{ number_format($baseTotal, 2) }} — the fee of the network you pick is added on top.</p>
     </div>
+
+    {{-- The JS swaps this in as soon as a coin is picked, so it must exist even
+         while the picker is on screen. Rendering it only in the non-select
+         branch made `payView.hidden = false` throw on a null element and left
+         the page blank after a click. --}}
+    <div id="payView" hidden>
+      <div id="panelBody"></div>
+    </div>
   @else
     <div id="payView">
 
@@ -446,7 +454,8 @@
     let h = '<div class="payhead">' + logo
       + '<div><h1>Send ' + esc(d.coin.label) + '</h1>'
       + '<p class="sub" style="margin-bottom:0">Pay the exact amount to the address below. We keep this page live and confirm automatically.</p></div></div>'
-      + amountBlock(d);
+      + amountBlock(d)
+      + '<button type="button" class="chip" id="switchNet" style="margin:2px 0 14px">\u21ba Change network</button>';
 
     if (d.mode === 'manual' && d.notice) h += '<div class="note bad">' + esc(d.notice) + '</div>';
 
@@ -493,6 +502,8 @@
   }
 
   function wire(d) {
+    const sw = document.getElementById('switchNet');
+    if (sw) sw.addEventListener('click', () => window.location.reload());
     const copy = document.getElementById('copyBtn');
     if (copy) copy.addEventListener('click', () => {
       const a = document.getElementById('addr');

@@ -5,6 +5,12 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ## [Unreleased]
 
+## [1.0.3] — 2026-11-20
+
+### Fixed
+- **Blank screen after picking a coin.** In `select` mode the template rendered only the picker, so the script's `payView.hidden = false` threw on a null element and the page went empty as soon as a customer tapped a network. The payment container now exists (hidden) in both modes.
+- Added a “↺ Change network” control to the payment view, so a customer can go back to the picker without a manual reload.
+
 ## [1.0.2] — 2026-11-20
 
 ### Changed
