@@ -37,5 +37,4 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 - Publishable config and views; self-loading migrations.
 
 [Unreleased]: https://github.com/devmgh1992/cryptapi-checkout/compare/v1.0.1...HEAD
-[1.0.1]: https://github.com/devmgh1992/cryptapi-checkout/compare/v1.0.0...v1.0.1
-[1.0.0]: https://github.com/devmgh1992/cryptapi-checkout/releases/tag/v1.0.0
+[1.0.1]: https://github.com/devmgh1992/cryptapi-checkout/releases/tag/v1.0.1
