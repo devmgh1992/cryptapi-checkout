@@ -5,6 +5,11 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ## [Unreleased]
 
+## [1.0.2] — 2026-11-20
+
+### Changed
+- `bacon/bacon-qr-code` constraint widened to `^2.0|^3.0`. Laravel 12 applications pin `^3.0`, so the old constraint blocked installation there. QR output is unchanged; the suite passes on v3.1.1.
+
 ## [1.0.1] — 2026-11-20
 
 ### Added
